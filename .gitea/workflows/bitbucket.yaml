@@ -1,0 +1,35 @@
+name: Mirror Bitbucket Repositories to Gitea
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Запускать каждый день в полночь
+  workflow_dispatch:  # Позволяет запускать workflow вручную через интерфейс Gitea
+
+jobs:
+  mirror-bitbucket:
+    runs-on: ubuntu-latest  # Используем последнюю версию Ubuntu
+    container: python:3.10-slim  # Используем официальный образ Python 3.10
+
+    steps:
+      # Шаг 1: Проверка кода
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Шаг 2: Установка зависимостей (если они есть)
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests  # Если используются сторонние библиотеки
+
+      # Шаг 3: Запуск скрипта
+      - name: Run Bitbucket to Gitea mirror script
+        env:
+          BITBUCKET_USERNAME: ${{ secrets.BITBUCKET_USERNAME }}
+          BITBUCKET_TARGET_USERNAME: ${{ secrets.BITBUCKET_TARGET_USERNAME }}
+          BITBUCKET_APP_PASSWORD: ${{ secrets.BITBUCKET_APP_PASSWORD }}
+          GITEA_URL: ${{ secrets.GITEA_URL }}
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          GITEA_ORG_NAME: ${{ secrets.GITEA_ORG_NAME }}
+        run: |
+          python3 bitbucket_to_gitea_mirror.py  # Замените на имя вашего скрипта
+
