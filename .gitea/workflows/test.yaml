@@ -1,4 +1,3 @@
-
 name: CI Workflow with Email Notifications
 on:
   push:  # Запускается при push в репозиторий
