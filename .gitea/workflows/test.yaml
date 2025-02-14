@@ -1,0 +1,14 @@
+
+name: Test Workflow
+on:
+  workflow_dispatch:  # Позволяет запускать workflow вручную через интерфейс Gitea
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run a failing command
+        run: exit 1
+
