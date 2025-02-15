@@ -11,7 +11,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run tests
-        run: exit 1  # Имитация ошибки
+        run: |
+          echo "Running tests..."
+          exit 1  # Имитация ошибки
 
   notify:
     runs-on: ubuntu-latest
@@ -30,6 +32,6 @@ jobs:
             The workflow "${{ gitea.workflow }}" has failed.
             Please check the logs: ${{ gitea.server_url }}/${{ gitea.repository }}/actions/runs/${{ gitea.run_id }}
           to: ${{ secrets.EMAIL_TO }}  # Получатель письма
-          from: "Gitea Notifications" <${{ secrets.SMTP_USERNAME }}>  # Отправитель письма
+          from: '"Gitea Notifications" <${{ secrets.SMTP_USERNAME }}>'  # Отправитель письма (экранировано)
           content_type: text/html  # Формат письма (text/plain или text/html)
 
