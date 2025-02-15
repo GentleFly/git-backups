@@ -40,8 +40,8 @@ jobs:
 
   notify:
     runs-on: ubuntu-latest
-    needs: build  # Зависит от завершения задачи "build"
-    if: failure()  # Запускается только при ошибке в задаче "build"
+    needs: mirroring-bitbucket  # Зависит от завершения задачи "mirroring-bitbucket"
+    if: failure()  # Запускается только при ошибке в задаче "mirroring-bitbucket"
     steps:
       - name: Send email notification
         uses: dawidd6/action-send-mail@v4
