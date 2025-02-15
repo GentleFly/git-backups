@@ -1,6 +1,5 @@
 name: CI Workflow with Email Notifications
 on:
-  push:  # Запускается при push в репозиторий
   workflow_dispatch:  # Запускается вручную через интерфейс Gitea
 
 jobs:

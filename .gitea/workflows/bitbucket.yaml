@@ -1,4 +1,4 @@
-name: Mirror Bitbucket Repositories to Gitea
+name: Mirroring Bitbucket Repositories to Gitea
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # Позволяет запускать workflow вручную через интерфейс Gitea
 
 jobs:
-  mirror-bitbucket:
+  mirroring-bitbucket:
     runs-on: ubuntu-latest  # Используем последнюю версию Ubuntu
 
     steps:
@@ -37,4 +37,24 @@ jobs:
           GITEA_ORG_NAME: ${{ secrets.ORG_NAME_FOR_BITBUCKET }}
         run: |
           python3 bitbucket_to_gitea_mirror.py  # Замените на имя вашего скрипта
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: build  # Зависит от завершения задачи "build"
+    if: failure()  # Запускается только при ошибке в задаче "build"
+    steps:
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: smtp.yandex.ru  # Адрес SMTP-сервера Yandex
+          server_port: 465  # Порт SMTP (465 для SSL, 587 для TLS)
+          username: ${{ secrets.SMTP_USERNAME }}  # Логин SMTP
+          password: ${{ secrets.SMTP_PASSWORD }}  # Пароль SMTP
+          subject: "Workflow Failed: ${{ gitea.workflow }}"
+          body: |
+            The workflow "${{ gitea.workflow }}" has failed.
+            Please check the logs: ${{ gitea.server_url }}/${{ gitea.repository }}/actions/runs/${{ gitea.run_id }}
+          to: ${{ secrets.EMAIL_TO }}  # Получатель письма
+          from: '"Gitea Notifications" <${{ secrets.SMTP_USERNAME }}>'  # Отправитель письма (экранировано)
+          content_type: text/html  # Формат письма (text/plain или text/html)
 
