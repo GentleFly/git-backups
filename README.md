@@ -1,16 +1,47 @@
 ﻿
-This repo contains Python scripts for automatic get lists of Git repositories from Bitbucket and GitHub, for user, and generate mirrors in Gitea for these lists.
+Automatic, periodical backup of git repositories from GitHub and Bitbucket to Gitea.
 
-How to use:
+There is Python scripts:
+* `./github_to_gitea_mirror.py`
+* `./bitbucket_to_gitea_mirror.py`
+
+Gitea Workflow YAML files:
+* `.gitea/workflows/github.yaml`
+* `.gitea/workflows/bitbucket.yaml`
+
+You can manually use Python script from command line, to automatically get a list of git repositories from GitHub or Bitbucket, and then generate mirrors in Gitea Organization.
+
+For use Gitea Workflow you need create Gitea Actions secrets:
+
+| Name                      | Description                                         |
+|---------------------------|-----------------------------------------------------|
+| USERNAME_GITHUB           | Your GitHub username                                |
+| TOKEN_GITHUB              | Your GitHub token                                   |
+| TARGET_USERNAME_GITHUB    | GitHub username who repositories will be back up    |
+| BITBUCKET_USERNAME        | Your Bitbucket username                             |
+| BITBUCKET_APP_PASSWORD    | Your Bitbucket token                                |
+| BITBUCKET_TARGET_USERNAME | Bitbucket username who repositories will be back up |
+| URL                       | Gitea url                                           |
+| ORG_NAME_FOR_BITBUCKET    | name of Gitea Organization for Bitbucket            |
+| ORG_NAME_FOR_GITHUB       | name of Gitea Organization for GitHub               |
+| TOKEN                     | Your Gitea token                                    |
+| EMAIL_TO                  | Recipient of the letter about errors                |
+| SMTP_USERNAME             | Login SMTP on smtp.yandex.ru                        |
+| SMTP_PASSWORD             | Pasword SMTP on smtp.yandex.ru                      |
+
+How to use script:
+
 * Set environment variables.
   ```bash
-  export BITBUCKET_USERNAME="ваш_username_bitbucket"
-  export BITBUCKET_APP_PASSWORD="ваш_app_password_bitbucket"
-  export GITEA_URL="ваш_gitea_domain"
-  export GITEA_TOKEN="ваш_gitea_token"
-  export BITBUCKET_TARGET_USERNAME="имя_пользователя_bitbucket"
-  export GITEA_ORG_NAME="имя_организации_gitea"
+  export BITBUCKET_USERNAME="your_username_bitbucket"
+  export BITBUCKET_APP_PASSWORD="your_app_password_bitbucket"
+  export GITEA_URL="your_gitea_domain"
+  export GITEA_TOKEN="your_gitea_token"
+  export BITBUCKET_TARGET_USERNAME="username_bitbucket"
+  export GITEA_ORG_NAME="org_gitea"
   ```
 * Run the script.
-
+  ```bash
+  ./bitbucket_to_gitea_mirror.py
+  ```
 
