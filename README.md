@@ -9,25 +9,33 @@ Gitea Workflow YAML files:
 * `.gitea/workflows/github.yaml`
 * `.gitea/workflows/bitbucket.yaml`
 
-You can manually use Python script from command line, to automatically get a list of git repositories from GitHub or Bitbucket, and then generate mirrors in Gitea Organization.
+# Gitea Actions
 
-For use Gitea Workflow you need create Gitea Actions secrets:
+For use Gitea Workflow you need create Gitea Actions secrets and variables:
 
-| Name                      | Description                                         |
+| Secrets                   | Description                                         |
 |---------------------------|-----------------------------------------------------|
 | USERNAME_GITHUB           | Your GitHub username                                |
 | TOKEN_GITHUB              | Your GitHub token                                   |
 | TARGET_USERNAME_GITHUB    | GitHub username who repositories will be back up    |
-| BITBUCKET_USERNAME        | Your Bitbucket username                             |
-| BITBUCKET_APP_PASSWORD    | Your Bitbucket token                                |
-| BITBUCKET_TARGET_USERNAME | Bitbucket username who repositories will be back up |
-| URL                       | Gitea url                                           |
-| ORG_NAME_FOR_BITBUCKET    | name of Gitea Organization for Bitbucket            |
-| ORG_NAME_FOR_GITHUB       | name of Gitea Organization for GitHub               |
-| TOKEN                     | Your Gitea token                                    |
+| USERNAME_BITBUCKET        | Your Bitbucket username                             |
+| APP_PASSWORD_BITBUCKET    | Your Bitbucket token                                |
+| TARGET_USERNAME_BITBUCKET | Bitbucket username who repositories will be back up |
+| TOKEN_GITEA               | Your Gitea token                                    |
 | EMAIL_TO                  | Recipient of the letter about errors                |
 | SMTP_USERNAME             | Login SMTP on smtp.yandex.ru                        |
 | SMTP_PASSWORD             | Pasword SMTP on smtp.yandex.ru                      |
+
+| Variables              | Description                              |
+|------------------------|------------------------------------------|
+| URL_GITEA              | Gitea url                                |
+| ORG_NAME_FOR_BITBUCKET | name of Gitea Organization for Bitbucket |
+| ORG_NAME_FOR_GITHUB    | name of Gitea Organization for GitHub    |
+
+
+# Manually use script
+
+You can manually use Python script from command line, to automatically get a list of git repositories from GitHub or Bitbucket, and then generate mirrors in Gitea Organization.
 
 How to use script:
 

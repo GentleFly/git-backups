@@ -32,9 +32,9 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           GITHUB_TARGET_USERNAME: ${{ secrets.TARGET_USERNAME_GITHUB }}
-          GITEA_URL: ${{ secrets.URL }}  # URL вашего сервера Gitea
-          GITEA_TOKEN: ${{ secrets.TOKEN }}
-          GITEA_ORG_NAME: ${{ secrets.ORG_NAME_FOR_GITHUB }}
+          GITEA_URL: ${{ vars.URL_GITEA }}  # URL вашего сервера Gitea
+          GITEA_TOKEN: ${{ secrets.TOKEN_GITEA }}
+          GITEA_ORG_NAME: ${{ vars.ORG_NAME_FOR_GITHUB }}
         run: |
           python3 github_to_gitea_mirror.py  # Замените на имя вашего скрипта
 

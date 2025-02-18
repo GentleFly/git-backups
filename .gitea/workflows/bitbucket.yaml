@@ -29,12 +29,12 @@ jobs:
       # Шаг 4: Запуск скрипта
       - name: Run Bitbucket to Gitea mirror script
         env:
-          BITBUCKET_USERNAME: ${{ secrets.BITBUCKET_USERNAME }}
-          BITBUCKET_APP_PASSWORD: ${{ secrets.BITBUCKET_APP_PASSWORD }}
-          BITBUCKET_TARGET_USERNAME: ${{ secrets.BITBUCKET_TARGET_USERNAME }}
-          GITEA_URL: ${{ secrets.URL }}
-          GITEA_TOKEN: ${{ secrets.TOKEN }}
-          GITEA_ORG_NAME: ${{ secrets.ORG_NAME_FOR_BITBUCKET }}
+          BITBUCKET_USERNAME: ${{ secrets.USERNAME_BITBUCKET }}
+          BITBUCKET_APP_PASSWORD: ${{ secrets.APP_PASSWORD_BITBUCKET }}
+          BITBUCKET_TARGET_USERNAME: ${{ secrets.TARGET_USERNAME_BITBUCKET }}
+          GITEA_URL: ${{ vars.URL_GITEA }}
+          GITEA_TOKEN: ${{ secrets.TOKEN_GITEA }}
+          GITEA_ORG_NAME: ${{ vars.ORG_NAME_FOR_BITBUCKET }}
         run: |
           python3 bitbucket_to_gitea_mirror.py  # Замените на имя вашего скрипта
 
