@@ -2,47 +2,47 @@
 # -*- coding: utf-8 -*-
 
 """
-Script: Создание зеркал репозиториев из Bitbucket в Gitea
+Script: Mirroring Repositories from Bitbucket to Gitea
 Author: DeepSeek (https://www.deepseek.com)
 Created: 2023-10-10
-Description: Скрипт получает список репозиториев пользователя на Bitbucket и создает их зеркала в Gitea.
+Description: This script retrieves a list of repositories from a Bitbucket user and creates their mirrors in Gitea.
 Version: 1.0
 License: MIT License
 
-Пример использования:
+Usage Example:
     python3 bitbucket_to_gitea_mirror.py
 """
 
-# Импорт необходимых библиотек
+# Import necessary libraries
 import http.client
 import json
 import base64
 import os
 
-# Учетные данные для Bitbucket (из переменных окружения)
+# Bitbucket credentials (from environment variables)
 BITBUCKET_USERNAME = os.getenv('BITBUCKET_USERNAME')
 BITBUCKET_APP_PASSWORD = os.getenv('BITBUCKET_APP_PASSWORD')
 
-# Учетные данные для Gitea (из переменных окружения)
-GITEA_URL = os.getenv('GITEA_URL')  # Например, 'gitea.example.com'
-GITEA_TOKEN = os.getenv('GITEA_TOKEN')  # Токен доступа Gitea
+# Gitea credentials (from environment variables)
+GITEA_URL = os.getenv('GITEA_URL')  # For example, 'gitea.example.com'
+GITEA_TOKEN = os.getenv('GITEA_TOKEN')  # Gitea access token
 
-# Имя пользователя в Bitbucket, чьи репозитории нужно перенести
+# Bitbucket username whose repositories need to be mirrored
 BITBUCKET_TARGET_USERNAME = os.getenv('BITBUCKET_TARGET_USERNAME')
 
-# Имя организации в Gitea, куда будут перенесены репозитории
+# Gitea organization name where repositories will be mirrored
 GITEA_ORG_NAME = os.getenv('GITEA_ORG_NAME')
 
-# Проверка наличия обязательных переменных окружения
+# Check if all required environment variables are set
 if not all([BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD, GITEA_URL, GITEA_TOKEN, BITBUCKET_TARGET_USERNAME, GITEA_ORG_NAME]):
-    raise ValueError("Не все обязательные переменные окружения заданы.")
+    raise ValueError("Not all required environment variables are set.")
 
-# Кодируем учетные данные для Basic Auth (Bitbucket)
+# Encode Bitbucket credentials for Basic Auth
 bitbucket_credentials = base64.b64encode(
     f"{BITBUCKET_USERNAME}:{BITBUCKET_APP_PASSWORD}".encode()
 ).decode()
 
-# Функция для получения списка репозиториев из Bitbucket
+# Function to get a list of repositories from Bitbucket
 def get_bitbucket_repositories(username):
     conn = http.client.HTTPSConnection("api.bitbucket.org")
     headers = {
@@ -58,15 +58,15 @@ def get_bitbucket_repositories(username):
         if response.status == 200:
             data = json.loads(response.read().decode())
             repositories.extend(data['values'])
-            url = data.get('next')  # Переход к следующей странице, если есть
+            url = data.get('next')  # Move to the next page if available
         else:
-            print(f"Ошибка при получении репозиториев из Bitbucket: {response.status} - {response.read().decode()}")
+            print(f"Error fetching repositories from Bitbucket: {response.status} - {response.read().decode()}")
             break
 
     conn.close()
     return repositories
 
-# Функция для проверки существования репозитория в Gitea (в организации)
+# Function to check if a repository exists in Gitea (in the organization)
 def gitea_repository_exists(org_name, repo_name):
     conn = http.client.HTTPSConnection(GITEA_URL)
     headers = {
@@ -78,7 +78,7 @@ def gitea_repository_exists(org_name, repo_name):
     conn.close()
     return response.status == 200
 
-# Функция для создания зеркала репозитория в Gitea (в организации)
+# Function to create a mirror repository in Gitea (in the organization)
 def create_gitea_mirror(org_name, repo_name, repo_url):
     conn = http.client.HTTPSConnection(GITEA_URL)
     headers = {
@@ -86,36 +86,36 @@ def create_gitea_mirror(org_name, repo_name, repo_url):
         "Content-Type": "application/json"
     }
     payload = json.dumps({
-        "clone_addr": repo_url,  # URL репозитория в Bitbucket
-        "repo_name": repo_name,  # Имя репозитория в Gitea
-        "mirror": True,  # Создать репозиторий как зеркало
-        "private": True,  # Сделать репозиторий приватным (или False для публичного)
-        "repo_owner": org_name,  # Владелец репозитория (организация)
-        "auth_username": BITBUCKET_USERNAME,  # Логин для доступа к Bitbucket
-        "auth_password": BITBUCKET_APP_PASSWORD,  # Пароль для доступа к Bitbucket
-        "service": "git",  # Тип сервиса (git для Bitbucket)
-        "mirror_interval": "24h"  # Интервал синхронизации
+        "clone_addr": repo_url,  # Repository URL in Bitbucket
+        "repo_name": repo_name,  # Repository name in Gitea
+        "mirror": True,  # Create the repository as a mirror
+        "private": True,  # Make the repository private (or False for public)
+        "repo_owner": org_name,  # Repository owner (organization)
+        "auth_username": BITBUCKET_USERNAME,  # Bitbucket login
+        "auth_password": BITBUCKET_APP_PASSWORD,  # Bitbucket password
+        "service": "git",  # Service type (git for Bitbucket)
+        "mirror_interval": "24h"  # Synchronization interval
     })
     conn.request("POST", "/api/v1/repos/migrate", body=payload, headers=headers)
     response = conn.getresponse()
     if response.status == 201:
-        print(f"Зеркало репозитория '{repo_name}' успешно создано в организации '{org_name}' в Gitea.")
+        print(f"Mirror repository '{repo_name}' successfully created in organization '{org_name}' in Gitea.")
     else:
-        print(f"Ошибка при создании зеркала репозитория '{repo_name}': {response.status} - {response.read().decode()}")
+        print(f"Error creating mirror repository '{repo_name}': {response.status} - {response.read().decode()}")
     conn.close()
 
-# Получаем список репозиториев из Bitbucket
+# Get the list of repositories from Bitbucket
 repositories = get_bitbucket_repositories(BITBUCKET_TARGET_USERNAME)
 
-# Создаем зеркала репозиториев в Gitea (в организации)
+# Create mirror repositories in Gitea (in the organization)
 for repo in repositories:
     repo_name = repo['name']
-    repo_url = repo['links']['clone'][0]['href']  # URL для клонирования (HTTPS)
+    repo_url = repo['links']['clone'][0]['href']  # Clone URL (HTTPS)
 
-    # Проверяем, существует ли репозиторий в Gitea (в организации)
+    # Check if the repository already exists in Gitea (in the organization)
     if gitea_repository_exists(GITEA_ORG_NAME, repo_name):
-        print(f"Репозиторий '{repo_name}' уже существует в организации '{GITEA_ORG_NAME}' в Gitea. Пропускаем.")
+        print(f"Repository '{repo_name}' already exists in organization '{GITEA_ORG_NAME}' in Gitea. Skipping.")
     else:
-        print(f"Создание зеркала репозитория: {repo_name}")
+        print(f"Creating mirror repository: {repo_name}")
         create_gitea_mirror(GITEA_ORG_NAME, repo_name, repo_url)
 
