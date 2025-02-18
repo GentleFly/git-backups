@@ -26,11 +26,12 @@ For use Gitea Workflow you need create Gitea Actions secrets and variables:
 | SMTP_USERNAME             | Login SMTP on smtp.yandex.ru                        |
 | SMTP_PASSWORD             | Pasword SMTP on smtp.yandex.ru                      |
 
-| Variables              | Description                              |
-|------------------------|------------------------------------------|
-| URL_GITEA              | Gitea url                                |
-| ORG_NAME_FOR_BITBUCKET | name of Gitea Organization for Bitbucket |
-| ORG_NAME_FOR_GITHUB    | name of Gitea Organization for GitHub    |
+| Variables              | Description                                                  |
+|------------------------|--------------------------------------------------------------|
+| URL_GITEA              | Gitea url                                                    |
+| ORG_NAME_FOR_BITBUCKET | name of Gitea Organization for Bitbucket                     |
+| ORG_NAME_FOR_GITHUB    | name of Gitea Organization for GitHub                        |
+| SMTP_SERVER            | SMTP server address                                          |
 
 
 # Manually use script
